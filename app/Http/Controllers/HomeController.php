@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use DB;
+use App\Models\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+
 
 class HomeController extends Controller
 {
@@ -32,9 +37,34 @@ class HomeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request) {
+        $rules = [
+            'file_name' => 'required|string|min:3|max:255',
+            'video_file' => 'required|max:2048'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return redirect('/')->withInput()->with('failed', $validator->errors()->first());
+        } else {
+
+            $data = $request->input();
+            try {
+                $filenameWithExt = $request->file('video_file')->getClientOriginalName();
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension = $request->file('video_file')->getClientOriginalExtension();
+                $fileNameToStore = $filename.'_'.time().'.'.$extension;
+                $path = $request->file('video_file')->storeAs('public/videos', $fileNameToStore);
+
+                $video = new Video;
+                $video->file_name = $data['file_name'];
+                $video->file_url = $fileNameToStore;
+                $video->save();
+                return redirect('/')->with('success', "Data video berhasil diinputkan");
+            } catch(Exception $e){
+                return redirect('/')->with('failed', "Input video gagal !");
+            }
+        }
     }
 
     /**
