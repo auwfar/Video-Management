@@ -73,9 +73,10 @@ class HomeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
+    public function show($id) {
+        $video = Video::whereId($id)->first();
+
+        return view('play', ["video_url" => asset('storage/videos/'.$video->file_url)]);
     }
 
     /**

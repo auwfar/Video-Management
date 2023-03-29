@@ -51,7 +51,7 @@
                     { data: 'file_url' },
                     {
                         "mRender": function ( data, type, row ) {
-                            return '<button class="btn btn-info">Play</button>&nbsp;&nbsp;<button class="btn btn-primary">Edit</button>&nbsp;&nbsp;<button class="btn btn-danger">Delete</button>';
+                            return '<a href="/play/'+ row.id +'" class="btn btn-info" role="button">Play</a>&nbsp;&nbsp;<button class="btn btn-primary">Edit</button>&nbsp;&nbsp;<button class="btn btn-danger">Delete</button>';
                         }
                     }
                 ]
