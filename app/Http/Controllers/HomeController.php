@@ -109,7 +109,6 @@ class HomeController extends Controller
         } else {
             $data = $request->input();
             try {
-
                 if ($request->hasFile('video_file')) {
                     $filenameWithExt = $request->file('video_file')->getClientOriginalName();
                     $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
@@ -137,8 +136,13 @@ class HomeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
+    public function destroy($id) {
+        try {
+            $video = Video::find($id);
+            $video->delete();
+            return redirect('/')->with('success', "Data video berhasil dihapus");
+        } catch(Exception $e){
+            return redirect('/')->with('failed', "Hapus video gagal !");
+        }
     }
 }

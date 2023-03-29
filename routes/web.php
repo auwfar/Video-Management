@@ -17,5 +17,6 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 Route::get('/create', [App\Http\Controllers\HomeController::class, 'create'])->name('create');
 Route::get('/play/{id}', [App\Http\Controllers\HomeController::class, 'show'])->name('play');
 Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'edit'])->name('edit');
+Route::get('/destroy/{id}', [App\Http\Controllers\HomeController::class, 'destroy'])->name('destroy');
 Route::post('/store', [App\Http\Controllers\HomeController::class, 'store'])->name('store');
 Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'update'])->name('update');
