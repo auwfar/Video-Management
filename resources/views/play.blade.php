@@ -17,7 +17,7 @@
 	<body>
 		<div class="container position-absolute top-50 start-50 translate-middle">
             <video class="w-100 video-js" controls preload="auto" data-setup='{"fluid": true}'>
-			  <source src="{!! $video_url !!}" type="video/mp4" />
+			  <source src="{!! $video_url !!}"/>
 			</video>
         </div>
 	</body>

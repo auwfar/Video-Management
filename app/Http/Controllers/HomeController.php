@@ -47,7 +47,6 @@ class HomeController extends Controller
         if ($validator->fails()) {
             return redirect('/')->withInput()->with('failed', $validator->errors()->first());
         } else {
-
             $data = $request->input();
             try {
                 $filenameWithExt = $request->file('video_file')->getClientOriginalName();
@@ -85,9 +84,10 @@ class HomeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
+    public function edit($id) {
+        $video = Video::whereId($id)->first();
+
+        return view('edit', ["video" => $video]);
     }
 
     /**
@@ -97,9 +97,38 @@ class HomeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(Request $request, $id) {
+        $rules = [
+            'file_name' => 'required|string|min:3|max:255',
+            'video_file' => 'max:2048'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return redirect('/')->withInput()->with('failed', $validator->errors()->first());
+        } else {
+            $data = $request->input();
+            try {
+
+                if ($request->hasFile('video_file')) {
+                    $filenameWithExt = $request->file('video_file')->getClientOriginalName();
+                    $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                    $extension = $request->file('video_file')->getClientOriginalExtension();
+                    $fileNameToStore = $filename.'_'.time().'.'.$extension;
+                    $path = $request->file('video_file')->storeAs('public/videos', $fileNameToStore);
+                } else {
+                    $fileNameToStore = $data['old_file_url'];
+                }
+
+                $video = Video::find($id);
+                $video->file_name = $data['file_name'];
+                $video->file_url = $fileNameToStore;
+                $video->save();
+                return redirect('/')->with('success', "Data video berhasil diedit");
+            } catch(Exception $e){
+                return redirect('/')->with('failed', "Edit video gagal !");
+            }
+        }
     }
 
     /**
